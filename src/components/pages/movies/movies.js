@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import Singlecontent from "../../SingleContent/Singlecontent";
 import Custompagination from "../../pagination/custompagination";
@@ -7,28 +7,28 @@ import useGenres from "../../../Hooks/useGenre";
 
 const Movies = () => {
   const [content, setContent] = useState([]);
-  const [page, setPage] = useState(1); // State to track the current page
-  const [numOfPages, setNumOfPages] = useState(); // State to track the total number of pages
+  const [page, setPage] = useState(1);
+  const [numOfPages, setNumOfPages] = useState();
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [genres, setGenres] = useState([]);
 
-  const genreQuery = useGenres(selectedGenres); // Correctly use the custom hook
+  const genreQuery = useGenres(selectedGenres);
 
-  const fetchTrending = async () => {
+  const fetchTrending = useCallback(async () => {
     try {
       const { data } = await axios.get(
         `https://api.themoviedb.org/3/discover/movie?api_key=86469c1f7e31b8ffd62dfd7b6e67becd&page=${page}&with_genres=${genreQuery}`
       );
       setContent(data.results);
-      setNumOfPages(data.total_pages); // Update the total number of pages
+      setNumOfPages(data.total_pages);
     } catch (error) {
       console.error("Failed to fetch trending movies", error);
     }
-  };
+  }, [page, genreQuery]);
 
   useEffect(() => {
-    fetchTrending(); // Fetch trending data when the component mounts or when page or selectedGenres change
-  }, [page, genreQuery]);
+    fetchTrending();
+  }, [fetchTrending]);
 
   return (
     <>
@@ -38,7 +38,7 @@ const Movies = () => {
         selectedGenres={selectedGenres}
         setSelectedGenres={setSelectedGenres}
         genres={genres}
-        setGenres={setGenres} // Correctly passing the setGenres function
+        setGenres={setGenres}
         setPage={setPage}
       />
       <div className="trending">

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import Chip from "@mui/material/Chip"; // Import Chip from Material-UI
 
 const Genres = ({
@@ -10,7 +10,7 @@ const Genres = ({
   setGenres,
   setPage,
 }) => {
-  const fetchGenres = async () => {
+  const fetchGenres = useCallback(async () => {
     try {
       const { data } = await axios.get(
         `https://api.themoviedb.org/3/genre/${type}/list?api_key=86469c1f7e31b8ffd62dfd7b6e67becd&language=en-US`
@@ -20,12 +20,11 @@ const Genres = ({
     } catch (error) {
       console.error("Failed to fetch genres", error);
     }
-  };
+  }, [type, setGenres]);
 
   useEffect(() => {
     fetchGenres();
-    // Include type in the dependency array if it should trigger refetching
-  }, [type]);
+  }, [fetchGenres]);
 
   return (
     <div style={{ padding: "6px 0" }}>

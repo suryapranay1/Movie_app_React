@@ -5,8 +5,6 @@ import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Typography from "@mui/material/Typography";
 import { img_500, unavailable } from "../../config/config"; // Import your image configurations
-import { useState, useEffect } from "react";
-import axios from "axios";
 import { Button } from "@mui/material";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 
@@ -33,8 +31,6 @@ export default function COntentModal({
   media_type,
   id,
 }) {
-  const [video, setVideo] = useState();
-
   return (
     <Modal
       aria-labelledby="transition-modal-title"

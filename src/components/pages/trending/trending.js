@@ -1,27 +1,29 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./trending.css";
 import Singlecontent from "../../SingleContent/Singlecontent";
 import Custompagination from "../../pagination/custompagination";
 
 const Trending = () => {
   const [content, setContent] = useState([]);
-  const [page, setPage] = useState(1); // State to track the current page
-  const [numOfPages, setNumOfPages] = useState(); // State to track the total number of pages
+  const [page, setPage] = useState(1);
+  const [numOfPages, setNumOfPages] = useState();
 
-  const fetchTrending = async () => {
-    const { data } = await axios.get(
-      `https://api.themoviedb.org/3/trending/all/week?api_key=86469c1f7e31b8ffd62dfd7b6e67becd&page=${page}`
-    );
-    console.log(data);
-
-    setContent(data.results);
-    setNumOfPages(data.total_pages); // Update the total number of pages
-  };
+  const fetchTrending = useCallback(async () => {
+    try {
+      const { data } = await axios.get(
+        `https://api.themoviedb.org/3/trending/all/week?api_key=86469c1f7e31b8ffd62dfd7b6e67becd&page=${page}`
+      );
+      setContent(data.results);
+      setNumOfPages(data.total_pages);
+    } catch (error) {
+      console.error("Failed to fetch trending content", error);
+    }
+  }, [page]);
 
   useEffect(() => {
-    fetchTrending(); // Fetch trending data when the component mounts or page changes
-  }, [page]); // Re-fetch data when the page changes
+    fetchTrending();
+  }, [fetchTrending]);
 
   return (
     <div>
